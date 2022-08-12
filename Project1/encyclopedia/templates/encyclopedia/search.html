@@ -1,0 +1,16 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    {{title}}
+{% endblock %}
+
+{% block body %}
+    <h1>The page "{{title}}" does not exist!</h1>
+    <h4>Did you mean:</h4>
+    <ul>
+        {% for subString in subStrings %}
+            <li><a href="{% url 'entryPage' subString %}">{{ subString }}</a></li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}
