@@ -1,5 +1,6 @@
 from logging.config import valid_ident
 from django.shortcuts import render
+from markdown2 import markdown
 
 from . import util
 
@@ -13,6 +14,7 @@ def getContent(request, title):
     content = util.get_entry(title)
 
     if content != None:
+        content = markdown(util.get_entry(title))
         return render(request, "encyclopedia/entryPage.html", {
             "title": title,
             "content": content
@@ -28,6 +30,7 @@ def search(request):
     content = util.get_entry(title)
 
     if content != None:
+        content = markdown(util.get_entry(title))
         return render(request, "encyclopedia/entryPage.html", {
             "title": title,
             "content": content
