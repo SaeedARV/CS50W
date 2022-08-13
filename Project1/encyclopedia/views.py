@@ -1,5 +1,6 @@
 from logging import PlaceHolder
 from logging.config import valid_ident
+from multiprocessing.sharedctypes import Value
 from turtle import title
 from django.shortcuts import render
 from markdown2 import markdown
@@ -7,8 +8,11 @@ from django import forms
 
 from . import util
 
-class NewTaskForm(forms.Form):
+class NewPageForm(forms.Form):
     title = forms.CharField(label="Title")
+    markDown = forms.CharField(widget=forms.Textarea(), label="Markdown")
+
+class EditPageForm(forms.Form):
     markDown = forms.CharField(widget=forms.Textarea(), label="Markdown")
 
 def index(request):
@@ -56,7 +60,7 @@ def search(request):
     
 def newPage(request):
     if request.method == "POST":
-        form = NewTaskForm(request.POST)
+        form = NewPageForm(request.POST)
         entries = util.list_entries()
 
         if form.is_valid():
@@ -75,5 +79,24 @@ def newPage(request):
             })
     else:
         return render(request, "encyclopedia/newPage.html", {
-            "form": NewTaskForm()
+            "form": NewPageForm()
+        })
+
+def editPage(request, title):
+    if request.method == "POST":
+        form = EditPageForm(request.POST)
+        entries = util.list_entries()
+
+        if form.is_valid():
+            markDown = form.cleaned_data['markDown']
+            util.save_entry(title, markDown)
+            return render(request, "encyclopedia/entryPage.html", {
+                "title": title,
+                "content": markdown(markDown)
+            })
+
+    else:
+        return render(request, "encyclopedia/editPage.html", {
+            "title": title,
+            "form": EditPageForm(initial={'markDown':util.get_entry(title)})
         })
