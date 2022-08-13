@@ -5,6 +5,7 @@ from turtle import title
 from django.shortcuts import render
 from markdown2 import markdown
 from django import forms
+from random import choice
 
 from . import util
 
@@ -85,7 +86,6 @@ def newPage(request):
 def editPage(request, title):
     if request.method == "POST":
         form = EditPageForm(request.POST)
-        entries = util.list_entries()
 
         if form.is_valid():
             markDown = form.cleaned_data['markDown']
@@ -100,3 +100,13 @@ def editPage(request, title):
             "title": title,
             "form": EditPageForm(initial={'markDown':util.get_entry(title)})
         })
+
+def randomPage(request):
+    entries = util.list_entries()
+    random = choice(entries)
+    markDown = util.get_entry(random)
+
+    return render(request, "encyclopedia/entryPage.html", {
+        "title": random,
+        "content": markdown(markDown)
+    })
