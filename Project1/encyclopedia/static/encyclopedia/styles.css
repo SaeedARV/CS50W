@@ -38,3 +38,7 @@ textarea {
 .sidebar h2 {
     margin-top: 5px;
 }
+
+.error {
+    color: #d33;
+}

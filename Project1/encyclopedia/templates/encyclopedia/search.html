@@ -5,11 +5,13 @@
 {% endblock %}
 
 {% block body %}
-    <h1>The page "{{title}}" does not exist!</h1>
+    <h1 class="error">The page "{{title}}" does not exist!</h1>
     <h4>Did you mean:</h4>
     <ul>
         {% for subString in subStrings %}
             <li><a href="{% url 'entryPage' subString %}">{{ subString }}</a></li>
+        {% empty %}
+            <li>Nothing found!</li>
         {% endfor %}
     </ul>
 
