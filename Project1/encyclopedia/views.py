@@ -10,11 +10,11 @@ from random import choice
 from . import util
 
 class NewPageForm(forms.Form):
-    title = forms.CharField(label="Title")
-    markDown = forms.CharField(widget=forms.Textarea(), label="Markdown")
+    title = forms.CharField(label='', widget=forms.TextInput(attrs={"placeholder": "Page Title"}))
+    markDown = forms.CharField(label='', widget=forms.Textarea(attrs={"placeholder": "Page Content"}))
 
 class EditPageForm(forms.Form):
-    markDown = forms.CharField(widget=forms.Textarea(), label="Markdown")
+    markDown = forms.CharField(label='', widget=forms.Textarea(attrs={"placeholder": "Page Content"}))
 
 def index(request):
     return render(request, "encyclopedia/index.html", {
