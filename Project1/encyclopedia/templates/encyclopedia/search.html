@@ -11,7 +11,7 @@
         {% for subString in subStrings %}
             <li><a href="{% url 'entryPage' subString %}">{{ subString }}</a></li>
         {% empty %}
-            <li>Nothing found!</li>
+            <li>Nothing Found!</li>
         {% endfor %}
     </ul>
 
