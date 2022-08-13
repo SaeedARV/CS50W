@@ -33,7 +33,7 @@ def getContent(request, title):
     
     else:
         return render(request, "encyclopedia/error.html", {
-            "error": 'The page"' + title + '"does not exist!'
+            "error": 'The page "' + title + '" does not exist!'
         })
 
 def search(request):
@@ -68,10 +68,11 @@ def newPage(request):
           title = form.cleaned_data['title']
           markDown = form.cleaned_data['markDown']
 
-        if title in entries:
-            return render(request, "encyclopedia/error.html", {
-                "error": 'The page"' + title + '"already exist!'
-            })
+        for entry in entries:
+            if title.upper() == entry.upper():
+                return render(request, "encyclopedia/error.html", {
+                    "error": 'The page "' + entry + '" already exist!'
+                })
         else:
             util.save_entry(title, markDown)
             return render(request, "encyclopedia/entryPage.html", {
