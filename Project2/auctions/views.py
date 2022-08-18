@@ -105,3 +105,20 @@ def createListing(request):
         return render(request, "auctions/createListing.html", {
             "form": listingForm()
         })
+
+def listingPage(request, listing_id):
+    if request.method == "POST":
+        pass
+    else:
+        auction = AuctionListings.objects.get(id=listing_id)
+        creator = False
+        if request.user == auction.user:
+            creator = True
+
+        bid = auction.bid.get().price
+
+        return render(request, "auctions/listingPage.html", {
+            "creator": creator,
+            "auction": auction,
+            "bid": bid,
+        })

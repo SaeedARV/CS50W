@@ -10,7 +10,7 @@
                     <img src="{{ auction.imgURL }}">
                 {% endif %}
 
-                <div class="title">title: {{ auction.title }} </div>
+                <a href="{% url 'listingPage' auction.id %}" class="title">title: {{ auction.title }} </a>
                 <div class="price">Price: {{ bid }} </div>
                 <div class="description">{{ auction.description }}</div>
                 
