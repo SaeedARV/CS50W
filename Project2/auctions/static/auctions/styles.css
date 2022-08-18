@@ -1,3 +1,26 @@
 body {
     padding: 10px;
 }
+
+.iAuction {
+    margin: 10px;
+    width: 100%;
+    border: 1px solid black;
+}
+
+.iAuction:hover {
+    background-color: #e9ecef;
+    cursor: pointer;
+}
+
+.iAuction .iTitle {
+    font-size: 30px;
+}
+
+.iAuction .iImage {
+    height: 298px;
+}
+
+.iAuction .iPrice {
+    font-weight: bold;
+}
