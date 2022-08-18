@@ -5,16 +5,26 @@ from django.shortcuts import render
 from django.urls import reverse
 from django import forms
 
-from .models import User, AuctionListings, Bids ,Comments
+from .models import User, AuctionListings, Bids, Comments
+
 
 class listingForm(forms.Form):
     title = forms.CharField(max_length=64)
     description = forms.CharField(max_length=1000)
-    imgURL = forms.CharField(label='image URL', max_length=1000, required=False)
+    startingBid = forms.IntegerField(label='Starting Bid', min_value=0)
+    imgURL = forms.CharField(
+        label='image URL', max_length=1000, required=False)
     category = forms.CharField(max_length=64, required=False)
 
+
 def index(request):
-    return render(request, "auctions/index.html")
+    bids = []
+    for auction in AuctionListings.objects.all():
+        bids.append(auction.bid.get().price)
+
+    return render(request, "auctions/index.html", {
+        "AuctionListings": zip(bids, AuctionListings.objects.all()),
+    })
 
 
 def login_view(request):
@@ -68,21 +78,28 @@ def register(request):
     else:
         return render(request, "auctions/register.html")
 
+
 def createListing(request):
     if request.method == "POST":
         title = request.POST["title"]
         description = request.POST["description"]
+        startingBid = request.POST["startingBid"]
         imgURL = request.POST["imgURL"]
         category = request.POST["category"]
 
-        AuctionListings.objects.create(
+        list = AuctionListings.objects.create(
             user=request.user,
             title=title,
             description=description,
             imgURL=imgURL,
             category=category,
         )
-        
+
+        Bids.objects.create(
+            list=list,
+            price=startingBid,
+        )
+
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "auctions/createListing.html", {
