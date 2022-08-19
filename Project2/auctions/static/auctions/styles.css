@@ -1,3 +1,7 @@
+* {
+    box-sizing: border-box;
+}
+
 body {
     padding: 10px;
 }
@@ -22,5 +26,24 @@ body {
 }
 
 .iAuction .iPrice {
+    font-weight: bold;
+}
+
+.lAuction {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+}
+
+.lAuction .lTitle {
+    font-size: 30px;
+}
+
+.lAuction .lImage {
+    height: 298px;
+    margin: 20px;
+}
+
+.lAuction .lPrice {
     font-weight: bold;
 }

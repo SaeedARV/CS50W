@@ -5,7 +5,6 @@ from django.db import models
 class User(AbstractUser):
     pass
 
-
 class AuctionListings(models.Model):
     title = models.CharField(max_length=64)
     description = models.CharField(max_length=1000)
@@ -13,11 +12,13 @@ class AuctionListings(models.Model):
     category = models.CharField(max_length=64)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     isActive = models.BooleanField(default=True)
+    Watchlist = models.ManyToManyField(User, blank=True, related_name="watchlist")
 
 
 class Bids(models.Model):
     list = models.ForeignKey(
         AuctionListings, on_delete=models.CASCADE, related_name='bid')
+    person = models.ForeignKey(User, on_delete=models.CASCADE)
     price = models.IntegerField()
 
 

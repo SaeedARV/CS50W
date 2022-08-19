@@ -97,6 +97,7 @@ def createListing(request):
 
         Bids.objects.create(
             list=list,
+            person=request.user,
             price=startingBid,
         )
 
@@ -107,18 +108,49 @@ def createListing(request):
         })
 
 def listingPage(request, listing_id):
-    if request.method == "POST":
-        pass
-    else:
+    if request.method == "GET":
         auction = AuctionListings.objects.get(id=listing_id)
         creator = False
         if request.user == auction.user:
             creator = True
 
-        bid = auction.bid.get().price
+        bid = auction.bid.get()
 
         return render(request, "auctions/listingPage.html", {
             "creator": creator,
             "auction": auction,
             "bid": bid,
         })
+
+def addToWatchlist(request, listing_id):
+    if request.method == "POST":
+        auction = AuctionListings.objects.get(id=listing_id)
+        if auction in request.user.watchlist.all():
+            request.user.watchlist.remove(auction)
+        else:
+            request.user.watchlist.add(auction)
+
+        return HttpResponseRedirect(reverse("listingPage", args=[listing_id]))
+    else:
+        return HttpResponseRedirect(reverse("listingPage", args=[listing_id]))
+
+def newBid(request, listing_id):
+    if request.method == "POST":
+        newBid = request.POST["newBid"]
+        auction = AuctionListings.objects.get(id=listing_id)
+        auction.bid.update(price=newBid)
+        auction.bid.update(person=request.user)
+
+        return HttpResponseRedirect(reverse("listingPage", args=[listing_id]))
+    else:
+        return HttpResponseRedirect(reverse("listingPage", args=[listing_id]))
+
+def closeAuction(request, listing_id):
+    if request.method == "POST":
+        auction = AuctionListings.objects.get(id=listing_id)
+        auction.isActive=False
+        auction.save()
+
+        return HttpResponseRedirect(reverse("listingPage", args=[listing_id]))
+    else:
+        return HttpResponseRedirect(reverse("listingPage", args=[listing_id]))
