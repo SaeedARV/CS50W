@@ -1,0 +1,16 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+    {% for auction in auctions %}
+        {% if auction.category != '' %}
+            <form action="{% url 'categoriesListings' auction.category %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-secondary">{{ auction.category }}</button>
+            </form>
+        {% endif %}
+    {% empty %}
+        <div>no category.</div>
+    {% endfor %}
+
+{% endblock %}

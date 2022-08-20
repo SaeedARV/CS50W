@@ -92,7 +92,7 @@ def createListing(request):
             title=title,
             description=description,
             imgURL=imgURL,
-            category=category,
+            category=category.capitalize(),
         )
 
         Bids.objects.create(
@@ -178,4 +178,19 @@ def watchlist(request):
 
     return render(request, "auctions/watchlist.html", {
         "watchlist": zip(bids, user.watchlist.all())
+    })
+
+def categories(request):
+    return render(request, "auctions/categories.html", {
+        "auctions": AuctionListings.objects.all(),
+    })
+
+def categoriesListings(request, category):
+    bids = []
+    for auction in AuctionListings.objects.all():
+        bids.append(auction.bid.get().price)
+
+    return render(request, "auctions/categoriesListings.html", {
+        "auctions": zip(bids, AuctionListings.objects.all()),
+        "category": category,
     })
