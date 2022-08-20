@@ -168,3 +168,14 @@ def addComment(request, listing_id):
         return HttpResponseRedirect(reverse("listingPage", args=[listing_id]))
     else:
         return HttpResponseRedirect(reverse("listingPage", args=[listing_id]))
+
+def watchlist(request):
+    user = request.user
+
+    bids = []
+    for auction in AuctionListings.objects.all():
+        bids.append(auction.bid.get().price)
+
+    return render(request, "auctions/watchlist.html", {
+        "watchlist": zip(bids, user.watchlist.all())
+    })

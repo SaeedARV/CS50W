@@ -1,10 +1,9 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-<h2>Active Listings</h2>
+<h2>Watchlist</h2>
 
-{% for bid, auction in AuctionListings %}
-    {% if auction.isActive %}
+{% for bid, auction in watchlist %}
         <div class="container-fluid">
             <div onclick="location.href='listingPage/{{auction.id}}'" class="row iAuction">
                 <div class="col-lg-6 col-xs-12 d-flex justify-content-center">
@@ -31,6 +30,5 @@
                 </div>
             </div>
         </div>
-    {% endif %}
 {% endfor %}
 {% endblock %}
