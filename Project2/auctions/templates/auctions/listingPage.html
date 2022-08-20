@@ -10,7 +10,7 @@
             {% elif user.is_authenticated and not auction.isActive %}
                 <div class="message"> You won this! </div>
             {% endif %}
-
+            <div class="lDate">Created {{ auction.date }}</div>
             <div class="lTitle">{{ auction.title }} </div>
 
             {% if user.is_authenticated and auction not in user.watchlist.all %}
@@ -44,6 +44,7 @@
             {% endif %}
 
             <div class="lDescription">{{ auction.description }}</div>
+            
 
             {% if auction.isActive and user.is_authenticated %}
                 <form action="{% url 'newBid' auction.id %}" method="post">
