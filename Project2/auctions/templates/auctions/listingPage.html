@@ -4,13 +4,14 @@
     <div class="container-fluid">
         <div class="row lAuction">
             {% if not user.is_authenticated and not auction.isActive %}
-                <div class="message"> This auction is closed</div>
+                <div class="cmessage"> This auction is closed</div>
             {% elif user.is_authenticated and not auction.isActive and user.id != bid.person.id %}
-                <div class="message"> This auction is closed</div>
+                <div class="cmessage"> This auction is closed</div>
             {% elif user.is_authenticated and not auction.isActive %}
-                <div class="message"> You won this! </div>
+                <div class="wmessage"> You won this! </div>
             {% endif %}
-            <div class="lDate">Created {{ auction.date }}</div>
+
+            
             <div class="lTitle">{{ auction.title }} </div>
 
             {% if user.is_authenticated and auction not in user.watchlist.all %}
@@ -38,9 +39,9 @@
             </div>
 
             {% if auction.isActive %}
-                <div class="lPrice">Current Price: {{ bid.price }} </div>
+                <div class="lPrice">Current Price: <span>US ${{ bid.price }}</span> </div>
             {% else %}
-                <div class="lPrice">Sold Price: {{ bid.price }} </div>
+                <div class="lPrice">Sold Price: <span>US ${{ bid.price }}</span> </div>
             {% endif %}
 
             <div class="lDescription">{{ auction.description }}</div>
@@ -49,10 +50,35 @@
             {% if auction.isActive and user.is_authenticated %}
                 <form action="{% url 'newBid' auction.id %}" method="post">
                     {% csrf_token %}
-                    <input class="lBid" type="number" name="newBid" placeholder="Bid" min="{{ bid.price }}">
-                    <input type="submit">
+                    <input class="lBid" type="number" step=".01" name="newBid" placeholder="Bid" min="{{ bid.price }}">
+                    <input type="submit" value="Submit Bid">
                 </form>
             {% endif %}
+
+            <div class="comments">
+                <hr>
+                <div class="commentsTitle">Comments:</div>
+                {% if user.is_authenticated %}
+                    <form action="{% url 'addComment' auction.id %}" method="post">
+                        {% csrf_token %}
+                        <textarea rows="4" cols="50" placeholder="Add a comment" name="commentText"></textarea>
+                        <input calss="d-flex justify-content-center" type="submit" value="Submit Comment">
+                    </form>
+                {% endif %}
+                
+
+                {% for comment in comments %}
+                    <div class="commentPerson">{{ comment.person }} | <span class="lDate"> {{ comment.date }} </span></div>
+                    <div class="commentText">{{ comment.text }}</div>
+                    <hr>
+                {% empty %}
+                    <div>no comment yet.</div>
+                {% endfor %}
+                
+                
+            </div>
+
+            <div class="lDate">Created {{ auction.date }}</div>
 
             {% if auction.isActive and user.is_authenticated and creator %}
                 <form action="{% url 'closeAuction' auction.id %}" method="post">
@@ -60,25 +86,6 @@
                     <button type="submit" class="btn btn-secondary">Close the Auction</button>
                 </form>
             {% endif %}
-
-            {% if user.is_authenticated %}
-                <form action="{% url 'addComment' auction.id %}" method="post">
-                    {% csrf_token %}
-                    <textarea rows="4" cols="50" placeholder="Add a comment" name="commentText"></textarea>
-                    <input type="submit" value="comment">
-                </form>
-            {% endif %}
-
-            <div class="comments">
-                <div>Comments:</div>
-                {% for comment in comments %}
-                    <div>{{ comment.person }} | {{ comment.date }}</div>
-                    <div>{{ comment.text }}</div>
-                    <hr>
-                {% empty %}
-                    <div>no comment yet.</div>
-                {% endfor %}
-            </div>
         </div>
     </div>
 {% endblock %}

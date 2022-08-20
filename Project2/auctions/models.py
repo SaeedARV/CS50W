@@ -21,7 +21,7 @@ class Bids(models.Model):
     list = models.ForeignKey(
         AuctionListings, on_delete=models.CASCADE, related_name='bid')
     person = models.ForeignKey(User, on_delete=models.CASCADE)
-    price = models.IntegerField()
+    price = models.DecimalField(max_digits = 5, decimal_places = 2)
 
 
 class Comments(models.Model):

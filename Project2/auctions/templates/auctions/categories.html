@@ -1,12 +1,12 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-
+<h2 class="text-center">Categories</h2>
     {% for auction in auctions %}
         {% if auction.category != '' %}
-            <form action="{% url 'categoriesListings' auction.category %}" method="post">
+            <form action="{% url 'categoriesListings' auction.category %}" method="post" class="form">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-secondary">{{ auction.category }}</button>
+                <button type="submit" class="btn btn-secondary categoriesButton">{{ auction.category }}</button>
             </form>
         {% endif %}
     {% empty %}

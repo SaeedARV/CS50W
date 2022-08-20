@@ -1,7 +1,7 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-<h2>Active Listings</h2>
+<h2 class="text-center">Active Listings</h2>
 
 {% for bid, auction in AuctionListings %}
     {% if auction.isActive %}
@@ -22,9 +22,9 @@
                 <div class="iText col-lg-6 col-xs-12">
                     <div class="iTitle">{{ auction.title }} </div>
                     {% if auction.isActive %}
-                        <div class="iPrice">Current Price: {{ bid }} </div>
+                        <div class="iPrice">Current Price: <span>US ${{ bid }}</span> </div>
                     {% else %}
-                        <div class="iPrice">Sold Price: {{ bid }} </div>
+                        <div class="iPrice">Sold Price: <span>US ${{ bid }}</span> </div>
                     {% endif %}
                     <div class="iDescription">{{ auction.description }}</div>
                     <div class="iDate">Created {{ auction.date }}</div>

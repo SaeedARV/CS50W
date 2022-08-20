@@ -8,6 +8,7 @@ body {
 
 .iAuction {
     margin: 10px;
+    height: 300px;
     width: 100%;
     border: 1px solid black;
 }
@@ -19,6 +20,7 @@ body {
 
 .iAuction .iTitle {
     font-size: 30px;
+    margin-bottom: 10px;
 }
 
 .iAuction .iImage {
@@ -26,13 +28,45 @@ body {
 }
 
 .iAuction .iPrice {
-    font-weight: bold;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.iAuction span {
+    font-weight: bold;    
+}
+
+.iAuction .iText {
+    height: 298px;
+    overflow: auto;
+    
+}
+
+.iAuction .iDate {
+    margin-top: 10px;
+    font-size: 14px;
 }
 
 .lAuction {
-    display: inline-block;
-    width: 100%;
+    display: block;
+    height: 300px;
     text-align: center;
+}
+
+.lAuction .cmessage {
+    font-size: 35px;
+    color: red;
+    margin-bottom: 10px;
+}
+
+.lAuction .wmessage {
+    font-size: 35px;
+    color: green;
+    margin-bottom: 10px;
+}
+
+.lAuction button {
+    margin: 20px;
 }
 
 .lAuction .lTitle {
@@ -45,5 +79,62 @@ body {
 }
 
 .lAuction .lPrice {
-    font-weight: bold;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.lAuction .lPrice span {
+    font-weight: bold;    
+}
+
+.lAuction .lText {
+    height: 298px;
+    overflow: auto;
+}
+
+.lAuction .lBid {
+    margin: 20px 0 20px;
+}
+
+.lAuction .lDate {
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+hr {
+    margin: 0;
+}
+
+.commentsTitle {
+    font-size: 25px;
+    margin: 10px;
+}
+
+.lAuction textarea {
+    width: 100%;
+}
+
+.comments input {
+    margin-bottom: 10px;
+}
+
+.commentPerson {
+    margin-bottom: 10px;
+}
+
+.commentText {
+    margin-bottom: 10px;
+}
+
+.categoriesButton {
+    margin: 3px;
+}
+
+.form {
+    display: inline-block;
+}
+
+.createListing input {
+    display: block;
+    margin-bottom: 10px;
 }

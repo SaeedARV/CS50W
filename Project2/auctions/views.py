@@ -11,7 +11,7 @@ from .models import User, AuctionListings, Bids, Comments
 class listingForm(forms.Form):
     title = forms.CharField(max_length=64)
     description = forms.CharField(max_length=1000)
-    startingBid = forms.IntegerField(label='Starting Bid', min_value=0)
+    startingBid = forms.DecimalField(label='Starting Bid', min_value=0)
     imgURL = forms.CharField(
         label='image URL', max_length=1000, required=False)
     category = forms.CharField(max_length=64, required=False)
