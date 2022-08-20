@@ -59,6 +59,25 @@
                     <button type="submit" class="btn btn-secondary">Close the Auction</button>
                 </form>
             {% endif %}
+
+            {% if user.is_authenticated %}
+                <form action="{% url 'addComment' auction.id %}" method="post">
+                    {% csrf_token %}
+                    <textarea rows="4" cols="50" placeholder="Add a comment" name="commentText"></textarea>
+                    <input type="submit" value="comment">
+                </form>
+            {% endif %}
+
+            <div class="comments">
+                <div>Comments:</div>
+                {% for comment in comments %}
+                    <div>{{ comment.person }} | {{ comment.date }}</div>
+                    <div>{{ comment.text }}</div>
+                    <hr>
+                {% empty %}
+                    <div>no comment yet.</div>
+                {% endfor %}
+            </div>
         </div>
     </div>
 {% endblock %}

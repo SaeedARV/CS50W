@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils import timezone
 
 
 class User(AbstractUser):
@@ -13,6 +14,7 @@ class AuctionListings(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     isActive = models.BooleanField(default=True)
     Watchlist = models.ManyToManyField(User, blank=True, related_name="watchlist")
+    date = models.DateTimeField(default=timezone.now)
 
 
 class Bids(models.Model):
@@ -23,5 +25,7 @@ class Bids(models.Model):
 
 
 class Comments(models.Model):
-    list = models.ForeignKey(AuctionListings, on_delete=models.CASCADE)
+    list = models.ForeignKey(AuctionListings, on_delete=models.CASCADE, related_name="comment")
+    person = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.CharField(max_length=1000)
+    date = models.DateTimeField(default=timezone.now)

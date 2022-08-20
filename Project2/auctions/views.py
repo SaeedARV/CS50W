@@ -120,6 +120,7 @@ def listingPage(request, listing_id):
             "creator": creator,
             "auction": auction,
             "bid": bid,
+            "comments": auction.comment.all(),
         })
 
 def addToWatchlist(request, listing_id):
@@ -150,6 +151,19 @@ def closeAuction(request, listing_id):
         auction = AuctionListings.objects.get(id=listing_id)
         auction.isActive=False
         auction.save()
+
+        return HttpResponseRedirect(reverse("listingPage", args=[listing_id]))
+    else:
+        return HttpResponseRedirect(reverse("listingPage", args=[listing_id]))
+    
+def addComment(request, listing_id):
+    if request.method == "POST":
+        auction = AuctionListings.objects.get(id=listing_id)
+        comment = Comments()
+        comment.list = auction
+        comment.person = request.user
+        comment.text = request.POST["commentText"]
+        comment.save()
 
         return HttpResponseRedirect(reverse("listingPage", args=[listing_id]))
     else:
