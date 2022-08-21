@@ -9,12 +9,12 @@ from .models import User, AuctionListings, Bids, Comments
 
 
 class listingForm(forms.Form):
-    title = forms.CharField(max_length=64)
-    description = forms.CharField(max_length=1000)
+    title = forms.CharField(max_length=100)
+    description = forms.CharField(max_length=5000)
     startingBid = forms.DecimalField(label='Starting Bid', min_value=0)
     imgURL = forms.CharField(
-        label='image URL', max_length=1000, required=False)
-    category = forms.CharField(max_length=64, required=False)
+        label='Image URL', max_length=5000, required=False)
+    category = forms.CharField(max_length=100, required=False)
 
 
 def index(request):
@@ -181,8 +181,14 @@ def watchlist(request):
     })
 
 def categories(request):
+    categories = set()
+
+    for auction in AuctionListings.objects.all():
+        if auction.category != '':
+            categories.add(auction.category)
+
     return render(request, "auctions/categories.html", {
-        "auctions": AuctionListings.objects.all(),
+        "categories": categories,
     })
 
 def categoriesListings(request, category):

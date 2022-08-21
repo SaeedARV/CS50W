@@ -2,13 +2,11 @@
 
 {% block body %}
 <h2 class="text-center">Categories</h2>
-    {% for auction in auctions %}
-        {% if auction.category != '' %}
-            <form action="{% url 'categoriesListings' auction.category %}" method="post" class="form">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-secondary categoriesButton">{{ auction.category }}</button>
-            </form>
-        {% endif %}
+    {% for category in categories %}
+        <form action="{% url 'categoriesListings' category %}" method="post" class="form">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-secondary categoriesButton">{{ category }}</button>
+        </form>
     {% empty %}
         <div>no category.</div>
     {% endfor %}

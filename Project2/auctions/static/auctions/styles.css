@@ -101,6 +101,10 @@ body {
     font-size: 14px;
 }
 
+.lAuction .lCategory {
+    margin-bottom: 10px;
+}
+
 hr {
     margin: 0;
 }
