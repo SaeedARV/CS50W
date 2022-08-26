@@ -13,6 +13,14 @@ tr {
     height: 40px;
 }
 
+tr:hover {
+    cursor: pointer;
+}
+
+td {
+    padding: 5px;
+}
+
 td:first-child {
     font-weight: bold;
 }
@@ -29,4 +37,8 @@ td:last-child {
 
 .read {
     background-color: #8080803d;
+}
+
+.bold {
+    font-weight: bold;
 }

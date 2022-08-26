@@ -15,6 +15,7 @@ function compose_email() {
 
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
+  document.querySelector('#email-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
 
   // Clear out composition fields
@@ -45,8 +46,9 @@ function compose_email() {
 function load_mailbox(mailbox) {
 
   // Show the mailbox and hide other views
-  document.querySelector('#emails-view').style.display = 'block';
+  document.querySelector('#email-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'none';
+  document.querySelector('#emails-view').style.display = 'block';
 
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
@@ -76,14 +78,55 @@ function load_mailbox(mailbox) {
         tr.append(td2);
         tr.append(td3);
 
-        if(emails[i].read){
-          tr.setAttribute('class','read');
+        if (emails[i].read) {
+          tr.setAttribute('class', 'read');
+        }
+
+        tr.onclick = function () {
+          load_email(emails[i].id)
         }
 
         tbody.append(tr);
 
       }
-      
+
       document.querySelector('#emails-view').append(table);
     });
+}
+
+function load_email(id) {
+
+  // Show the email and hide other views
+  document.querySelector('#emails-view').style.display = 'none';
+  document.querySelector('#compose-view').style.display = 'none';
+  document.querySelector('#email-view').style.display = 'block';
+
+  fetch(`/emails/${id}`)
+    .then(response => response.json())
+    .then(email => {
+      // Print email
+      console.log(email);
+
+      document.querySelector('#email-view').innerHTML = `
+      <div><span class="bold">From:</span> ${email.sender} </div>
+      <div><span class="bold">To:</span> ${email.recipients} </div>
+      <div><span class="bold">Subject:</span> ${email.subject} </div>
+      <div><span class="bold">Timestamp:</span> ${email.timestamp} </div>
+
+      <hr>
+
+      <div> ${email.body} </div>
+      `
+
+      if (email.read != true) {
+        fetch(`/emails/${id}`, {
+          method: 'PUT',
+          body: JSON.stringify({
+            read: true
+          })
+        });
+      }
+    });
+
+
 }
