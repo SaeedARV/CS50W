@@ -38,7 +38,7 @@ function compose_email() {
         console.log(result);
         load_mailbox('sent');
       })
-     
+
   });
 }
 
@@ -50,4 +50,40 @@ function load_mailbox(mailbox) {
 
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+
+  fetch(`/emails/${mailbox}`)
+    .then(response => response.json())
+    .then(emails => {
+      // Print emails
+      console.log(emails);
+
+      let table = document.createElement('table');
+      let tbody = document.createElement('tbody');
+      table.append(tbody);
+
+      for (let i in emails) {
+        let tr = document.createElement('tr');
+
+        let td1 = document.createElement('td');
+        let td2 = document.createElement('td');
+        let td3 = document.createElement('td');
+
+        td1.innerHTML = `${emails[i].sender}`;
+        td2.innerHTML = `${emails[i].subject}`;
+        td3.innerHTML = `${emails[i].timestamp}`;
+
+        tr.append(td1);
+        tr.append(td2);
+        tr.append(td3);
+
+        if(emails[i].read){
+          tr.setAttribute('class','read');
+        }
+
+        tbody.append(tr);
+
+      }
+      
+      document.querySelector('#emails-view').append(table);
+    });
 }
