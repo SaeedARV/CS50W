@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
   document.querySelector('#inbox').addEventListener('click', () => load_mailbox('inbox'));
   document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
   document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
-  document.querySelector('#compose').addEventListener('click', compose_email);
+  document.querySelector('#compose').addEventListener('click', () => compose_email());
   let button = document.querySelector('.archive')
   if(button){
   button.addEventListener('click', () => {
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 
-function compose_email() {
+function compose_email(id) {
 
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
@@ -28,6 +28,23 @@ function compose_email() {
   document.querySelector('#compose-recipients').value = '';
   document.querySelector('#compose-subject').value = '';
   document.querySelector('#compose-body').value = '';
+
+  if(id){
+    fetch(`/emails/${id}`)
+    .then(response => response.json())
+    .then(email => {
+      document.querySelector('#compose-recipients').value = email.sender;
+
+      if(email.subject[0] == 'R' && email.subject[1] == 'e' && email.subject[2] == ':' && email.subject[3] == ' '){
+        document.querySelector('#compose-subject').value = email.subject;
+      }
+      else {
+        document.querySelector('#compose-subject').value = 'Re: ' + email.subject;
+      }
+
+      document.querySelector('#compose-body').value = 'On ' + email.timestamp + ' ' + email.sender + ' wrote: ' + email.body;
+    });
+  }
 
 
   document.querySelector("#compose-form").addEventListener('submit', function () {
@@ -151,6 +168,14 @@ function load_email(id, mailbox) {
         }
         document.querySelector('#email-view').append(button);
       }
+
+      let button = document.createElement('button');
+      button.setAttribute('class', 'btn btn-sm btn-outline-primary');
+      button.innerHTML = 'Reply';
+      button.onclick = function(){
+        compose_email(id)
+      }
+      document.querySelector('#email-view').append(button);
 
       document.querySelector('#email-view').insertAdjacentHTML('beforeend',
         `

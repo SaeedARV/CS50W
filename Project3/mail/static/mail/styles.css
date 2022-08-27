@@ -42,3 +42,11 @@ td:last-child {
 .bold {
     font-weight: bold;
 }
+
+#compose-view input[type=submit] {
+    margin: 16px 0 16px 0;
+}
+
+#email-view button {
+    margin: 10px 5px 0 0;
+}
