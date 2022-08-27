@@ -41,8 +41,7 @@ function compose_email(id) {
   }
 
 
-  document.querySelector("#compose-form").addEventListener('submit', function () {
-    load_mailbox('sent');
+  document.querySelector("#compose-form").onsubmit = () => {
     fetch('/emails', {
       method: 'POST',
       body: JSON.stringify({
@@ -51,13 +50,15 @@ function compose_email(id) {
         body: document.querySelector("#compose-body").value
       })
     })
-      .then(response => response.json())
-      .then(result => {
-        // console.log(result);
-        load_mailbox('sent');
-      })
+      .then(function(result) {
+        // Print result
+        console.log(result);
 
-  });
+        //location.reload(true);
+        load_mailbox('sent');
+      });
+      return false;
+  };
 }
 
 function load_mailbox(mailbox) {
@@ -74,7 +75,7 @@ function load_mailbox(mailbox) {
     .then(response => response.json())
     .then(emails => {
       // Print emails
-      // console.log(emails);
+       console.log(emails);
 
       let table = document.createElement('table');
       let tbody = document.createElement('tbody');
@@ -122,7 +123,7 @@ function load_email(id, mailbox) {
     .then(response => response.json())
     .then(email => {
       // Print email
-      // console.log(email);
+      console.log(email);
 
       document.querySelector('#email-view').innerHTML = `
       <div><span class="bold">From:</span> ${email.sender} </div>
