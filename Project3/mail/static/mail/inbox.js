@@ -5,6 +5,12 @@ document.addEventListener('DOMContentLoaded', function () {
   document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
   document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
   document.querySelector('#compose').addEventListener('click', compose_email);
+  let button = document.querySelector('.archive')
+  if(button){
+  button.addEventListener('click', () => {
+    console.log('ok');
+  });
+}
 
   // By default, load the inbox
   load_mailbox('inbox');
@@ -83,7 +89,7 @@ function load_mailbox(mailbox) {
         }
 
         tr.onclick = function () {
-          load_email(emails[i].id)
+          load_email(emails[i].id, mailbox)
         }
 
         tbody.append(tr);
@@ -94,7 +100,7 @@ function load_mailbox(mailbox) {
     });
 }
 
-function load_email(id) {
+function load_email(id, mailbox) {
 
   // Show the email and hide other views
   document.querySelector('#emails-view').style.display = 'none';
@@ -112,11 +118,47 @@ function load_email(id) {
       <div><span class="bold">To:</span> ${email.recipients} </div>
       <div><span class="bold">Subject:</span> ${email.subject} </div>
       <div><span class="bold">Timestamp:</span> ${email.timestamp} </div>
+      `
+      if (mailbox != 'sent' && email.archived == false) {
+        let button = document.createElement('button');
+        button.setAttribute('class', 'btn btn-sm btn-outline-primary');
+        button.innerHTML = 'Archive';
+        button.onclick = function(){
+          fetch(`/emails/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+              archived: true
+            })
+          });
+          location.reload(true);
+          load_mailbox('inbox');
+        }
+        document.querySelector('#email-view').append(button);
+      }
+      else if (mailbox != 'sent' && email.archived == true) {
+        let button = document.createElement('button');
+        button.setAttribute('class', 'btn btn-sm btn-success');
+        button.innerHTML = 'Unarchive';
+        button.onclick = function(){
+          fetch(`/emails/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+              archived: false
+            })
+          });
+          location.reload(true);
+          load_mailbox('inbox');
+        }
+        document.querySelector('#email-view').append(button);
+      }
 
+      document.querySelector('#email-view').insertAdjacentHTML('beforeend',
+        `
       <hr>
 
       <div> ${email.body} </div>
       `
+      )
 
       if (email.read != true) {
         fetch(`/emails/${id}`, {
@@ -127,6 +169,5 @@ function load_email(id) {
         });
       }
     });
-
 
 }
