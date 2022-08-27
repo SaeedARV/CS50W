@@ -5,12 +5,6 @@ document.addEventListener('DOMContentLoaded', function () {
   document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
   document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
   document.querySelector('#compose').addEventListener('click', () => compose_email());
-  let button = document.querySelector('.archive')
-  if(button){
-  button.addEventListener('click', () => {
-    console.log('ok');
-  });
-}
 
   // By default, load the inbox
   load_mailbox('inbox');
@@ -59,7 +53,7 @@ function compose_email(id) {
     })
       .then(response => response.json())
       .then(result => {
-        console.log(result);
+        // console.log(result);
         load_mailbox('sent');
       })
 
@@ -80,7 +74,7 @@ function load_mailbox(mailbox) {
     .then(response => response.json())
     .then(emails => {
       // Print emails
-      console.log(emails);
+      // console.log(emails);
 
       let table = document.createElement('table');
       let tbody = document.createElement('tbody');
@@ -128,7 +122,7 @@ function load_email(id, mailbox) {
     .then(response => response.json())
     .then(email => {
       // Print email
-      console.log(email);
+      // console.log(email);
 
       document.querySelector('#email-view').innerHTML = `
       <div><span class="bold">From:</span> ${email.sender} </div>

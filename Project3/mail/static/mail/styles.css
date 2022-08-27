@@ -15,6 +15,7 @@ tr {
 
 tr:hover {
     cursor: pointer;
+    box-shadow: 0px 2px 4px black;
 }
 
 td {
@@ -36,7 +37,7 @@ td:last-child {
 }
 
 .read {
-    background-color: #8080803d;
+    background-color: #80808031;
 }
 
 .bold {
@@ -44,9 +45,13 @@ td:last-child {
 }
 
 #compose-view input[type=submit] {
-    margin: 16px 0 16px 0;
+    margin-top: 16px;
 }
 
 #email-view button {
     margin: 10px 5px 0 0;
+}
+
+footer {
+    margin-top: 20px;
 }
