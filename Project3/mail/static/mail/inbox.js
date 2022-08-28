@@ -23,6 +23,7 @@ function compose_email(id) {
   document.querySelector('#compose-subject').value = '';
   document.querySelector('#compose-body').value = '';
 
+  // Reply
   if(id){
     fetch(`/emails/${id}`)
     .then(response => response.json())
@@ -40,7 +41,7 @@ function compose_email(id) {
     });
   }
 
-
+  // Send the email
   document.querySelector("#compose-form").onsubmit = () => {
     fetch('/emails', {
       method: 'POST',
@@ -54,7 +55,6 @@ function compose_email(id) {
         // Print result
         console.log(result);
 
-        //location.reload(true);
         load_mailbox('sent');
       });
       return false;
@@ -71,6 +71,7 @@ function load_mailbox(mailbox) {
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
 
+  // Load the emails
   fetch(`/emails/${mailbox}`)
     .then(response => response.json())
     .then(emails => {
@@ -119,6 +120,7 @@ function load_email(id, mailbox) {
   document.querySelector('#compose-view').style.display = 'none';
   document.querySelector('#email-view').style.display = 'block';
 
+  // Load the email
   fetch(`/emails/${id}`)
     .then(response => response.json())
     .then(email => {
@@ -131,6 +133,8 @@ function load_email(id, mailbox) {
       <div><span class="bold">Subject:</span> ${email.subject} </div>
       <div><span class="bold">Timestamp:</span> ${email.timestamp} </div>
       `
+
+      // Archive
       if (mailbox != 'sent' && email.archived == false) {
         let button = document.createElement('button');
         button.setAttribute('class', 'btn btn-sm btn-outline-primary');
@@ -164,6 +168,7 @@ function load_email(id, mailbox) {
         document.querySelector('#email-view').append(button);
       }
 
+      // Reply
       let button = document.createElement('button');
       button.setAttribute('class', 'btn btn-sm btn-outline-primary');
       button.innerHTML = 'Reply';
@@ -180,6 +185,7 @@ function load_email(id, mailbox) {
       `
       )
 
+      // Read
       if (email.read != true) {
         fetch(`/emails/${id}`, {
           method: 'PUT',
