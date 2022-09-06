@@ -1,0 +1,25 @@
+#newPost {
+    border: 0.5px solid black;
+    width: 100%;
+    padding: 20px;
+}
+
+textarea {
+    width: 100%;
+}
+
+.post{
+    border: 0.5px solid black;
+    width: 100%;
+    padding: 20px;
+    margin-top: 10px;
+}
+
+.username{
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.date {
+    opacity: 0.7;
+}
