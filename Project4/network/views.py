@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User, Post
+from .models import User, Post, Follow
 
 
 def index(request):
@@ -70,3 +70,31 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
+
+def profilePage(request, username):
+    user = User.objects.get(username=username)
+    isFollowed = False
+
+    for follow in user.followed.all():
+        if request.user == follow.follower:
+            isFollowed = True
+
+    return render(request, "network/profilePage.html", {
+        "profileUser": user,
+        "isFollowed": isFollowed
+    })
+
+def follow(request, profileUser_id):
+    if request.method == "POST":
+        profileUser = User.objects.get(id=profileUser_id)
+        for follow in profileUser.followed.all():
+            if request.user == follow.follower:
+                Follow.objects.filter(follower=request.user).delete()
+                break
+        else:
+            Follow.objects.create(
+                follower=request.user,
+                followed=profileUser
+            )
+
+        return HttpResponseRedirect(reverse("profilePage", args=[profileUser.username]))

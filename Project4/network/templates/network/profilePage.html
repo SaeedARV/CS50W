@@ -1,0 +1,34 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+
+    <div class="container-fluid">
+            <div class="followers">followers: {{ user.followed.all|length }}</div>
+            <div class="following">following: {{ user.follower.all|length }}</div>
+
+            {% if user.is_authenticated and user.id != profileUser.id and isFollowed %}
+                <form action="{% url 'follow' profileUser.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success">Unfollow</button>
+                </form>
+            {% elif user.is_authenticated and user.id != profileUser.id %}
+                <form action="{% url 'follow' profileUser.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-secondary">Follow</button>
+                </form>
+            {% endif %}
+            
+            <div id="profilePosts">
+                {% for post in user.post.all %}
+                    <div class="post">
+                        <div class="username"><a href="{% url 'profilePage' post.poster.username %}">{{ post.poster.username }}</a></div>
+                        <div class="content">{{ post.content }}</div>
+                        <div class="date">{{ post.date }}</div>
+                        <dic class="likes"><svg color="red" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+                        </svg> {{ post.likes }}</dic>
+                    </div>
+                {% endfor %}
+            </div>
+    </div>
+{% endblock %}

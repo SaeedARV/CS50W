@@ -4,18 +4,20 @@
     <h2>All Posts</h2>
 
     <div class="container-fluid">
-            <div id="newPost">
-                <h3>New Post</h3>
-                <form action="{% url 'index' %}" method="post">
-                    {% csrf_token %}
-                    <textarea name="textarea"></textarea>
-                    <button type="submit" class="btn btn-primary">Post</button>
-                </form>
-            </div>
+            {% if user.is_authenticated %}
+                <div id="newPost">
+                    <h3>New Post</h3>
+                    <form action="{% url 'index' %}" method="post">
+                        {% csrf_token %}
+                        <textarea name="textarea"></textarea>
+                        <button type="submit" class="btn btn-primary">Post</button>
+                    </form>
+                </div>
+            {% endif %}
             <div id="allPosts">
                 {% for post in posts %}
                     <div class="post">
-                        <div class="username">{{ post.poster.username }}</div>
+                        <div class="username"><a href="{% url 'profilePage' post.poster.username %}">{{ post.poster.username }}</a></div>
                         <div class="content">{{ post.content }}</div>
                         <div class="date">{{ post.date }}</div>
                         <dic class="likes"><svg color="red" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
@@ -24,6 +26,5 @@
                     </div>
                 {% endfor %}
             </div>
-
     </div>
 {% endblock %}
