@@ -14,10 +14,23 @@ def index(request):
             content=request.POST["textarea"],
         )
         return HttpResponseRedirect(reverse("index"))
-    else: 
-        return render(request, "network/index.html", {
-            "posts": Post.objects.all()
-        })
+    else:
+        if request.user.is_authenticated:
+            posts = Post.objects.all()
+            followingPosts = []
+            for post in posts:
+                for follow in request.user.follower.all():
+                    if follow.followed == post.poster:
+                        followingPosts.append(post)
+
+            return render(request, "network/index.html", {
+                "posts": posts,
+                "followingPosts": followingPosts
+            })
+        else:
+            return render(request, "network/index.html", {
+                "posts": Post.objects.all()
+            })
 
 
 def login_view(request):
