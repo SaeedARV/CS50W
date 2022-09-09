@@ -2,51 +2,66 @@
 
 {% block body %}
 
-    <div id="followingPosts-view">
-        <h2>Followings Posts</h2>
+    <h2>All Posts</h2>
 
-        <div class="container-fluid">
-                <div id="followingPosts">
-                    {% for post in followingPosts %}
-                        <div class="post">
-                            <div class="username"><a href="{% url 'profilePage' post.poster.username %}">{{ post.poster.username }}</a></div>
-                            <div class="content">{{ post.content }}</div>
-                            <div class="date">{{ post.date }}</div>
-                            <dic class="likes"><svg color="red" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
-                            </svg> {{ post.likes }}</dic>
-                        </div>
-                    {% endfor %}
+    <div class="container-fluid">
+        {% if user.is_authenticated %}
+            <div id="newPost">
+                <h3>New Post</h3>
+                <form action="{% url 'index' %}" method="post">
+                    {% csrf_token %}
+                    <textarea name="textarea"></textarea>
+                    <button type="submit" class="btn btn-primary">Post</button>
+                </form>
+            </div>
+        {% endif %}
+        <div id="allPosts">
+            {% for post in page_obj %}
+                <div class="post">
+                    <div class="username"><a href="{% url 'profilePage' post.poster.username %}">{{ post.poster.username }}</a></div>
+                    <div class="content">{{ post.content }}</div>
+                    <div class="date">{{ post.date }}</div>
+                    <dic class="likes"><svg color="red" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+                    </svg> {{ post.likes }}</dic>
                 </div>
+            {% endfor %}
         </div>
-    </div>
-    
-    <div id="allPosts-view">
-        <h2>All Posts</h2>
 
-        <div class="container-fluid">
-                {% if user.is_authenticated %}
-                    <div id="newPost">
-                        <h3>New Post</h3>
-                        <form action="{% url 'index' %}" method="post">
-                            {% csrf_token %}
-                            <textarea name="textarea"></textarea>
-                            <button type="submit" class="btn btn-primary">Post</button>
-                        </form>
-                    </div>
+        <nav aria-label="...">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}" tabindex="-1" aria-disabled="true">Previous</a>
+                </li>
+
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">Previous</span>
+                </li>
                 {% endif %}
-                <div id="allPosts">
-                    {% for post in posts %}
-                        <div class="post">
-                            <div class="username"><a href="{% url 'profilePage' post.poster.username %}">{{ post.poster.username }}</a></div>
-                            <div class="content">{{ post.content }}</div>
-                            <div class="date">{{ post.date }}</div>
-                            <dic class="likes"><svg color="red" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
-                            </svg> {{ post.likes }}</dic>
-                        </div>
-                    {% endfor %}
-                </div>
-        </div>
+
+                <li class="page-item active">
+                    <a class="page-link" href="?page={{ page_obj.page_number }}">{{ page_obj.number }}</a>
+                </li>
+
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+                </li>   
+
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}" tabindex="-1" aria-disabled="true">Next</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">Next</span>
+                  </li>
+                {% endif %}
+            </ul>
+          </nav>
     </div>
 {% endblock %}

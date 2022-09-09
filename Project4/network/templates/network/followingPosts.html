@@ -2,27 +2,11 @@
 
 {% block body %}
 
-    {% if message %}
-        {{ message }}
-    {% else %}
-    <div class="container-fluid">
-        <div><strong>{{ profileUser.username }}</strong></div>
-        <div class="followers">followers: {{ profileUser.followed.all|length }}</div>
-        <div class="following">following: {{ profileUser.follower.all|length }}</div>
+    <h2>Followings Posts</h2>
 
-        {% if user.is_authenticated and user.id != profileUser.id and isFollowed %}
-            <form action="{% url 'follow' profileUser.id %}" method="post">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-success">Unfollow</button>
-            </form>
-        {% elif user.is_authenticated and user.id != profileUser.id %}
-            <form action="{% url 'follow' profileUser.id %}" method="post">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-secondary">Follow</button>
-            </form>
-        {% endif %}
+    <div class="container-fluid">
         
-        <div id="profilePosts">
+        <div id="followingPosts">
             {% for post in page_obj %}
                 <div class="post">
                     <div class="username"><a href="{% url 'profilePage' post.poster.username %}">{{ post.poster.username }}</a></div>
@@ -70,8 +54,6 @@
                 {% endif %}
             </ul>
           </nav>
-
     </div>
-    
-    {% endif %}
+
 {% endblock %}

@@ -3,6 +3,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.core.paginator import Paginator
 
 from .models import User, Post, Follow
 
@@ -15,22 +16,15 @@ def index(request):
         )
         return HttpResponseRedirect(reverse("index"))
     else:
-        if request.user.is_authenticated:
-            posts = Post.objects.all()
-            followingPosts = []
-            for post in posts:
-                for follow in request.user.follower.all():
-                    if follow.followed == post.poster:
-                        followingPosts.append(post)
+        allPosts = Post.objects.all()
 
-            return render(request, "network/index.html", {
-                "posts": posts,
-                "followingPosts": followingPosts
-            })
-        else:
-            return render(request, "network/index.html", {
-                "posts": Post.objects.all()
-            })
+        paginator = Paginator(allPosts, 10)
+        page_number = request.GET.get('page')
+        allPosts_obj = paginator.get_page(page_number)
+        
+        return render(request, "network/index.html", {
+            "page_obj": allPosts_obj
+        })
 
 
 def login_view(request):
@@ -85,16 +79,26 @@ def register(request):
         return render(request, "network/register.html")
 
 def profilePage(request, username):
-    user = User.objects.get(username=username)
-    isFollowed = False
+    try:
+        user = User.objects.get(username=username)
+    except:
+        return render(request, "network/profilePage.html", {
+            "message": "User not found."
+        })
 
+    isFollowed = False
     for follow in user.followed.all():
         if request.user == follow.follower:
             isFollowed = True
 
+    paginator = Paginator(user.post.all(), 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     return render(request, "network/profilePage.html", {
         "profileUser": user,
-        "isFollowed": isFollowed
+        "isFollowed": isFollowed,
+        "page_obj": page_obj
     })
 
 def follow(request, profileUser_id):
@@ -111,3 +115,20 @@ def follow(request, profileUser_id):
             )
 
         return HttpResponseRedirect(reverse("profilePage", args=[profileUser.username]))
+
+def followingPosts(request):
+    posts = Post.objects.all()
+    followingPosts = []
+    for post in posts:
+        for follow in request.user.follower.all():
+            if follow.followed == post.poster:
+                followingPosts.append(post)
+
+
+    paginator = Paginator(followingPosts, 10)
+    page_number = request.GET.get('page')
+    followingPosts_obj = paginator.get_page(page_number)
+
+    return render(request, "network/followingPosts.html", {
+        "page_obj": followingPosts_obj
+    })
