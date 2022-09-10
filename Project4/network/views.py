@@ -1,10 +1,11 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.core.paginator import Paginator
-
+from django.utils import timezone
+from django.views.decorators.csrf import csrf_exempt
 from .models import User, Post, Follow
 
 
@@ -12,7 +13,7 @@ def index(request):
     if request.method == "POST":
         Post.objects.create(
             poster=request.user,
-            content=request.POST["textarea"],
+            content=request.POST["newTextarea"],
         )
         return HttpResponseRedirect(reverse("index"))
     else:
@@ -132,3 +133,22 @@ def followingPosts(request):
     return render(request, "network/followingPosts.html", {
         "page_obj": followingPosts_obj
     })
+
+@csrf_exempt
+def editPost(request, post_id):
+    if request.method == 'POST':
+        post = Post.objects.get(id=post_id)
+        if(request.user.id == post.poster.id):
+            content = request.POST["textarea"]
+
+            post.content = content
+            post.isEdited = True
+            
+            post.save()
+            return HttpResponse(status=204)
+        else:
+            return HttpResponse(status=404)
+    else:
+        return HttpResponse(status=400)
+
+

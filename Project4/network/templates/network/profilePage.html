@@ -24,14 +24,26 @@
         
         <div id="profilePosts">
             {% for post in page_obj %}
-                <div class="post">
-                    <div class="username"><a href="{% url 'profilePage' post.poster.username %}">{{ post.poster.username }}</a></div>
+            <div class="post">
+                <div class="post-view" data-post_id="{{ post.id }}">
+                    <div class="usDate"><span class="username"><a href="{% url 'profilePage' post.poster.username %}">{{ post.poster.username }}</a></span> · <span class="date">{{ post.date }}</span>
+                    {% if user.id == post.poster.id %}
+                    · <a class="edit">Edit</a>
+                    {% endif %}
+                    </div>
                     <div class="content">{{ post.content }}</div>
-                    <div class="date">{{ post.date }}</div>
-                    <dic class="likes"><svg color="red" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                    <div class="likes"><svg color="red" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
                         <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
-                    </svg> {{ post.likes }}</dic>
+                    </svg> {{ post.likes }}</div>
+                    <div class="edited">
+                        {% if post.isEdited %}
+                        edited
+                        {% endif %}
+                    </div>
                 </div>
+
+                <div class="edit-view"></div>
+            </div>
             {% endfor %}
         </div>
 

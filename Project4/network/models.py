@@ -11,6 +11,7 @@ class Post(models.Model):
     content = models.CharField(max_length=5000)
     date = models.DateTimeField(default=timezone.now)
     likes = models.IntegerField(default=0)
+    isEdited = models.BooleanField(default=False)
 
 class Follow(models.Model):
     follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name="follower")
