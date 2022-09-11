@@ -1,3 +1,4 @@
+import json
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
@@ -8,6 +9,7 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from .models import User, Post, Follow
 
+# TODO: reverse order of posts
 
 def index(request):
     if request.method == "POST":
@@ -151,4 +153,26 @@ def editPost(request, post_id):
     else:
         return HttpResponse(status=400)
 
+@csrf_exempt
+def updateLike(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        post_id = data.get('post_id')
+        try:
+            post = Post.objects.get(id=post_id)
+        except:
+            print(post_id)
+        isLiked = False
+
+        if (request.user.likes.filter(pk=post_id).exists()):
+            post.likedBy.remove(request.user)
+        else: 
+            post.likedBy.add(request.user)
+            isLiked = True
+        
+        post.save()
+
+        return JsonResponse({"isLiked": isLiked, "likesCount": post.likedBy.all().count()}, status=200)
+    else:
+        return HttpResponse(status=400)
 
