@@ -1,5 +1,6 @@
 import json
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
@@ -8,8 +9,6 @@ from django.core.paginator import Paginator
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from .models import User, Post, Follow
-
-# TODO: reverse order of posts
 
 def index(request):
     if request.method == "POST":
@@ -21,7 +20,7 @@ def index(request):
     else:
         allPosts = Post.objects.all()
 
-        paginator = Paginator(allPosts, 10)
+        paginator = Paginator(allPosts.order_by('-date'), 10)
         page_number = request.GET.get('page')
         allPosts_obj = paginator.get_page(page_number)
         
@@ -67,6 +66,10 @@ def register(request):
             return render(request, "network/register.html", {
                 "message": "Passwords must match."
             })
+        elif username == '' or email == '' or password == '' or confirmation == '':
+            return render(request, "network/register.html", {
+                "message": "Please fill out all the fields."
+            })
 
         # Attempt to create new user
         try:
@@ -86,7 +89,7 @@ def profilePage(request, username):
         user = User.objects.get(username=username)
     except:
         return render(request, "network/profilePage.html", {
-            "message": "User not found."
+            "message": "User not found"
         })
 
     isFollowed = False
@@ -94,7 +97,7 @@ def profilePage(request, username):
         if request.user == follow.follower:
             isFollowed = True
 
-    paginator = Paginator(user.post.all(), 10)
+    paginator = Paginator(user.post.all().order_by('-date'), 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -104,6 +107,7 @@ def profilePage(request, username):
         "page_obj": page_obj
     })
 
+@login_required
 def follow(request, profileUser_id):
     if request.method == "POST":
         profileUser = User.objects.get(id=profileUser_id)
@@ -118,25 +122,32 @@ def follow(request, profileUser_id):
             )
 
         return HttpResponseRedirect(reverse("profilePage", args=[profileUser.username]))
+    else:
+        return HttpResponse(status=400)
 
+@login_required
 def followingPosts(request):
-    posts = Post.objects.all()
-    followingPosts = []
-    for post in posts:
-        for follow in request.user.follower.all():
-            if follow.followed == post.poster:
-                followingPosts.append(post)
+    if request.method == 'GET':
+        posts = Post.objects.all().order_by('-date')
+        followingPosts = []
+        for post in posts:
+            for follow in request.user.follower.all():
+                if follow.followed == post.poster:
+                    followingPosts.append(post)
 
 
-    paginator = Paginator(followingPosts, 10)
-    page_number = request.GET.get('page')
-    followingPosts_obj = paginator.get_page(page_number)
+        paginator = Paginator(followingPosts, 10)
+        page_number = request.GET.get('page')
+        followingPosts_obj = paginator.get_page(page_number)
 
-    return render(request, "network/followingPosts.html", {
-        "page_obj": followingPosts_obj
-    })
+        return render(request, "network/followingPosts.html", {
+            "page_obj": followingPosts_obj
+        })
+    else:
+        return HttpResponse(status=400)
 
 @csrf_exempt
+@login_required
 def editPost(request, post_id):
     if request.method == 'POST':
         post = Post.objects.get(id=post_id)
@@ -154,14 +165,12 @@ def editPost(request, post_id):
         return HttpResponse(status=400)
 
 @csrf_exempt
+@login_required
 def updateLike(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         post_id = data.get('post_id')
-        try:
-            post = Post.objects.get(id=post_id)
-        except:
-            print(post_id)
+        post = Post.objects.get(id=post_id)
         isLiked = False
 
         if (request.user.likes.filter(pk=post_id).exists()):

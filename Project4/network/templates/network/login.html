@@ -4,10 +4,10 @@
 
     <h2>Login</h2>
 
+    <div class="container-fluid">
     {% if message %}
-        <div>{{ message }}</div>
+        <div class="formMessage">{{ message }}</div>
     {% endif %}
-
     <form action="{% url 'login' %}" method="post">
         {% csrf_token %}
         <div class="form-group">
@@ -20,5 +20,7 @@
     </form>
 
     Don't have an account? <a href="{% url 'register' %}">Register here.</a>
+
+    </div>
 
 {% endblock %}
